@@ -10,7 +10,7 @@ public class Position {
         col =  Integer.parseInt( position.substring(1)) - 1;
     }
 
-    public Position(int row, int col) {
+    public Position(int row, int col)   {
         this.row = row;
         this.col = col ;
     }
