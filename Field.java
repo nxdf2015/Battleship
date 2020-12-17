@@ -1,14 +1,21 @@
 package battleship;
 
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Field {
     Status[][]  field;
     private Position position;
+    private int countShip;
+    private List<Ship> ships;
+
     public Field() {
         this.field = new Status[10][10];
+        this.ships = new ArrayList<>();
+        countShip = 0;
         initialize();
     }
 
@@ -30,31 +37,71 @@ public class Field {
                 return false;
             }
         }
-
+         countShip++;
         for(Position p : ship.getCoordinates()){
 
             field[p.getRow()][p.getCol()] = Status.SHIP;
+            ships.add(ship);
+
         }
         return true;
      }
 
-     public boolean shot(String loc) throws IllegalArgumentException {
+     public boolean sinkAll() {
+        return countShip == 0;
+     }
+
+     public String shot(String loc) throws IllegalArgumentException {
           Position position = new Position(loc);
 
           if (!position.validPosition()) {
               throw new IllegalArgumentException("You entered the wrong coordinates! ");
           }
-          boolean free = isFree(position);
-          if (!free) {
-               changeStatus(position, Status.HIT);
-          } else {
-              changeStatus(position, Status.MISS);
+
+         Status status = getStatus(position);
+         String message = "";
+          if (status == Status.FREE) {
+              status = Status.MISS;
+              message =  "You missed. Try again:";
+
           }
-          return !free;
+          if (status == Status.SHIP) {
+
+              Ship ship = findShip(position);
+              ship.addShot();
+              status = Status.HIT;
+              boolean sink = ship.isSink();
+              if (sink) {
+                  countShip--;
+              }
+
+              if (countShip == 0) {
+                  message =  "You sank the last ship. You won. Congratulations!";
+              }
+              else if (sink) {
+                  message =  "you sank a ship! specify a new target:";
+              }
+              else {
+                  message =  "You hit a ship! Try again:";
+              }
+
+          }
+
+          changeStatus(position, status);
+          return message;
+
      }
 
+    public Ship findShip(Position position) {
+        return ships.stream().filter( ship -> ship.getCoordinates().contains(position)).collect(Collectors.toList()).get(0);
+    }
 
-     public void changeStatus (Position position, Status status) {
+    private Status getStatus(Position position) {
+        return field[position.getRow()][position.getCol()];
+    }
+
+
+    public void changeStatus (Position position, Status status) {
         field[position.getRow()][position.getCol()] = status;
      }
 

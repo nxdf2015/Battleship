@@ -46,21 +46,29 @@ public class Main {
             System.out.println(field);
         }
 
+
         System.out.println("The game starts!");
         System.out.println(field.fog());
-        System.out.println("Take a shot!");
-        boolean repeat = true;
-        while (repeat) {
-            String loc = scanner.next();
-            try {
-                boolean hit = field.shot(loc);
-                System.out.println(field.fog());
-                System.out.println(hit ? "You hit a ship!" : "You missed!");
-                System.out.println(field);
-                repeat = false;
-            } catch (IllegalArgumentException e) {
-                System.out.println("Error! " + e.getMessage() + "Try again:");
+
+
+        boolean finish = false;
+        while(!finish) {
+            boolean repeat = true;
+            System.out.println("Take a shot!");
+            while (repeat) {
+
+                String loc = scanner.next();
+                try {
+                    String result = field.shot(loc);
+                    System.out.println(field.fog());
+                    finish = field.sinkAll();
+                    System.out.println(result);
+                    repeat = false;
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error! " + e.getMessage() + "Try again:");
+                }
             }
+
         }
 
     }

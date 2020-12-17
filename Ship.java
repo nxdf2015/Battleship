@@ -3,6 +3,7 @@ package battleship;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Ship {
 
@@ -11,9 +12,12 @@ public class Ship {
     private int size;
     private String name;
 
+    private int countShot;
+
     public Ship(String name, int size){
         this.size = size;
         this.name = name;
+        this.countShot = 0;
     }
 
     public Ship(Position locStart, Position locEnd) {
@@ -36,6 +40,14 @@ public class Ship {
 
     public   String getName(){
         return  name;
+    }
+
+    public boolean isSink() {
+        return countShot == size;
+    }
+
+    public void addShot(){
+        countShot++;
     }
 
     public void order() {
@@ -145,6 +157,7 @@ public class Ship {
 
             }
         }
+
         return coordinates;
     }
 
@@ -156,4 +169,18 @@ public class Ship {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ship ship = (Ship) o;
+        return Objects.equals(locStart, ship.locStart) &&
+                Objects.equals(locEnd, ship.locEnd) ;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locStart, locEnd, getSize(), getName());
+    }
 }
