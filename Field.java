@@ -62,7 +62,7 @@ public class Field {
          String message = "";
           if (status == Status.FREE) {
               status = Status.MISS;
-              message =  "You missed. Try again:";
+              message =  "You missed.";
 
           }
           if (status == Status.SHIP) {
@@ -79,10 +79,10 @@ public class Field {
                   message =  "You sank the last ship. You won. Congratulations!";
               }
               else if (sink) {
-                  message =  "you sank a ship! specify a new target:";
+                  message =  "you sank a ship!";
               }
               else {
-                  message =  "You hit a ship! Try again:";
+                  message =  "You hit a ship!";
               }
 
           }
